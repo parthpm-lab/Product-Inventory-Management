@@ -1,4 +1,4 @@
-<div class="ims-page sup-page">
+<div class="ims-page">
   <p *ngIf="message" class="ims-toast ims-error">{{ message }}</p>
 
   <header class="ims-page-head">
@@ -6,125 +6,146 @@
       <h1 class="ims-page-title">Supplier Management</h1>
       <p class="ims-page-sub">Performance ratings · On-time delivery · Vendor analytics</p>
     </div>
-    <button
-      type="button"
-      class="ims-btn ims-btn-primary"
-      (click)="navigateToAddSupplierPage()"
-    >
+    <button type="button" class="ims-btn ims-btn-primary" (click)="navigateToAddSupplierPage()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
       Add Supplier
     </button>
   </header>
 
   <section class="sup-kpis" *ngIf="summary">
-    <article class="kpi-mini ims-card pastel-sky">
+    <article class="kpi-mini">
       <span class="kpi-mini-label">Total Suppliers</span>
       <strong>{{ summary.supplierTotal || 0 }}</strong>
     </article>
-    <article class="kpi-mini ims-card pastel-lilac">
-      <span class="kpi-mini-label">Avg Rating</span>
-      <strong>{{ (summary.supplierAvgRating || 0) | number : '1.1-1' }}★</strong>
+    <article class="kpi-mini">
+      <span class="kpi-mini-label">Avg Rating (Out of 5)</span>
+      <strong>{{ (summary.supplierAvgRating || 0) | number : '1.1-1' }}</strong>
     </article>
-    <article class="kpi-mini ims-card pastel-mint">
-      <span class="kpi-mini-label">On-Time Delivery %</span>
+    <article class="kpi-mini">
+      <span class="kpi-mini-label">On-Time Delivery</span>
       <strong>{{ (summary.supplierAvgOnTime || 0) | number : '1.0-0' }}%</strong>
     </article>
-    <article class="kpi-mini ims-card pastel-lemon">
+    <article class="kpi-mini">
       <span class="kpi-mini-label">Total Purchase Value</span>
       <strong>{{ summary.supplierTotalPurchaseValue | currency : 'INR' : 'symbol' : '1.0-0' }}</strong>
     </article>
   </section>
 
   <section class="sup-panels" *ngIf="summary">
-    <div class="ims-card perf-panel top">
+    <div class="ims-card perf-panel" style="border-top: 4px solid var(--success)">
       <h2 class="panel-h2">Top Performer</h2>
       <p class="panel-sub">Best performing supplier this period</p>
       <div *ngIf="summary.supplierTopPerformer as t">
-        <div class="perf-title">{{ t.name }}</div>
+        <div class="perf-title">🏆 {{ t.name }}</div>
         <div class="perf-metric">
           <span>On-Time Delivery</span><strong>{{ t.onTimeDeliveryPercent || 0 }}%</strong>
         </div>
         <div class="track"><div class="fill green" [style.width.%]="t.onTimeDeliveryPercent || 0"></div></div>
+        
         <div class="perf-metric">
           <span>Quality Score</span><strong>{{ t.qualityScorePercent || 85 }}%</strong>
         </div>
         <div class="track"><div class="fill green" [style.width.%]="t.qualityScorePercent || 85"></div></div>
+        
         <div class="perf-metric">
-          <span>Response Time</span><strong>{{ t.responseTimeHours || 12 }}h</strong>
+          <span>Avg Response Time</span><strong>{{ t.responseTimeHours || 12 }}h</strong>
         </div>
       </div>
     </div>
 
-    <div class="ims-card perf-panel risk">
+    <div class="ims-card perf-panel" style="border-top: 4px solid var(--danger)">
       <h2 class="panel-h2">Needs Attention</h2>
-      <p class="panel-sub">Worst performer · Consider alternative supplier</p>
+      <p class="panel-sub">Lowest performer · Consider alternative supplier</p>
       <div *ngIf="summary.supplierNeedsAttention as w">
-        <div class="perf-title">{{ w.name }}</div>
+        <div class="perf-title">⚠️ {{ w.name }}</div>
         <div class="perf-metric">
           <span>On-Time Delivery</span><strong>{{ w.onTimeDeliveryPercent || 0 }}%</strong>
         </div>
         <div class="track"><div class="fill red" [style.width.%]="w.onTimeDeliveryPercent || 0"></div></div>
+        
         <div class="perf-metric">
           <span>Quality Score</span><strong>{{ w.qualityScorePercent || 65 }}%</strong>
         </div>
         <div class="track"><div class="fill red" [style.width.%]="w.qualityScorePercent || 65"></div></div>
-        <p class="warn">Consider alternative supplier</p>
+        
+        <p class="warn">Action Required: Performance improvement plan or replacement.</p>
       </div>
     </div>
   </section>
 
   <section class="sup-table-wrap ims-card" *ngIf="suppliers.length">
-    <table class="sup-table">
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Supplier</th>
-          <th>Star Rating</th>
-          <th>On-Time %</th>
-          <th>Items Supplied</th>
-          <th>Status</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let s of suppliers; let i = index">
-          <td class="muted">{{ i + 1 }}</td>
-          <td>
-            <div class="sup-name">{{ s.name }}</div>
-            <div class="sup-email">{{ s.email || '—' }}</div>
-          </td>
-          <td class="mono">{{ stars(s.starRating || 0) }}</td>
-          <td class="mono">{{ s.onTimeDeliveryPercent || 0 }}%</td>
-          <td class="mono">{{ s.itemsSupplied || 0 }}</td>
-          <td>
-            <div *ngIf="isAdmin; else readOnlyStatus">
-              <label class="ims-toggle">
-                <input
-                  type="checkbox"
-                  [checked]="s.status === 'ACTIVE'"
-                  (change)="toggleStatus(s)"
-                />
-                <span class="ims-slider"></span>
-              </label>
-              <span class="ims-pill" [ngClass]="s.status === 'INACTIVE' ? 'pill-inactive' : 'pill-active'">
-                {{ s.status }}
-              </span>
-            </div>
-            <ng-template #readOnlyStatus>
-              <span class="ims-pill" [ngClass]="s.status === 'INACTIVE' ? 'pill-inactive' : 'pill-active'">
-                {{ s.status || 'ACTIVE' }}
-              </span>
-            </ng-template>
-          </td>
-          <td class="sup-actions">
-            <button type="button" class="ims-btn ims-btn-ghost" (click)="navigateToEditSupplierPage(s.id)">Edit</button>
-            <button type="button" class="ims-btn ims-btn-danger" (click)="handleDeleteSupplier(s.id)">Delete</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <div style="overflow-x: auto;">
+      <table class="sup-table">
+        <thead>
+          <tr>
+            <th>Supplier Details</th>
+            <th>Rating</th>
+            <th>Performance</th>
+            <th>Status</th>
+            <th style="text-align: right">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let s of suppliers">
+            <td>
+              <div class="sup-profile">
+                <!-- Avatar -->
+                <div class="sup-avatar">{{ s.name?.charAt(0) || 'S' }}</div>
+                <div>
+                  <div class="sup-name">{{ s.name }}</div>
+                  <div class="sup-email">{{ s.email || '—' }}</div>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div style="color: #F59E0B; display: flex; gap: 2px;">
+                <!-- Render Star SVGs based on rating -->
+                <svg *ngFor="let star of [1,2,3,4,5]" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" 
+                     [attr.fill]="star <= (s.starRating || 0) ? '#F59E0B' : 'transparent'" 
+                     [attr.stroke]="star <= (s.starRating || 0) ? '#F59E0B' : '#CBD5E1'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                </svg>
+              </div>
+            </td>
+            <td>
+              <div style="width: 140px;">
+                <div style="display: flex; justify-content: space-between; font-size: 11px; font-weight: 600; margin-bottom: 4px;">
+                  <span style="color: var(--text-muted)">On-Time</span>
+                  <span [style.color]="(s.onTimeDeliveryPercent || 0) > 80 ? 'var(--success)' : 'var(--danger)'">{{ s.onTimeDeliveryPercent || 0 }}%</span>
+                </div>
+                <div class="track" style="margin-bottom: 0; height: 4px;"><div class="fill" [ngClass]="(s.onTimeDeliveryPercent || 0) > 80 ? 'green' : 'red'" [style.width.%]="s.onTimeDeliveryPercent || 0"></div></div>
+              </div>
+            </td>
+            <td>
+              <div class="status-cell">
+                <div *ngIf="isAdmin" title="Toggle active status">
+                  <label class="ims-toggle">
+                    <input type="checkbox" [checked]="s.status === 'ACTIVE'" (change)="toggleStatus(s)" />
+                    <span class="ims-slider"></span>
+                  </label>
+                </div>
+                <span class="ims-badge" [ngClass]="s.status === 'INACTIVE' ? 'badge-danger' : 'badge-success'">
+                  {{ s.status || 'ACTIVE' }}
+                </span>
+              </div>
+            </td>
+            <td class="sup-actions">
+              <button type="button" class="ims-btn ims-btn-ghost btn-icon-only" (click)="navigateToEditSupplierPage(s.id)" title="Edit">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+              </button>
+              <button *ngIf="isAdmin" type="button" class="ims-btn ims-btn-danger btn-icon-only" (click)="handleDeleteSupplier(s.id)" title="Delete">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </section>
 
-  <p *ngIf="!suppliers.length && !message" class="empty-state ims-card">
-    No suppliers yet. Register your first vendor.
-  </p>
+  <div *ngIf="!suppliers.length && !message" class="ims-empty-state ims-card">
+    <div class="empty-icon">🏢</div>
+    <h3 class="empty-title">No Suppliers</h3>
+    <p class="empty-desc">Register your first vendor to start placing purchase orders.</p>
+  </div>
 </div>

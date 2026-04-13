@@ -1,1 +1,164 @@
-@import '../login/login.component.css';
+.auth-split {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+}
+
+.auth-visual {
+  flex: 1;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  position: relative;
+  overflow: hidden;
+}
+.auth-visual::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: url('data:image/svg+xml;utf8,<svg width="200" height="200" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><line x1="0" y1="50" x2="100" y2="50" stroke="rgba(255,255,255,0.03)" stroke-width="2"/><line x1="50" y1="0" x2="50" y2="100" stroke="rgba(255,255,255,0.03)" stroke-width="2"/></svg>') repeat;
+  opacity: 0.8;
+}
+
+.auth-visual-inner {
+  max-width: 480px;
+  position: relative;
+  z-index: 2;
+}
+
+.auth-logo {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 24px;
+  letter-spacing: 2px;
+  background: white;
+  color: #0f172a;
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  display: inline-block;
+  margin-bottom: 32px;
+}
+
+.auth-visual h1 {
+  font-family: var(--font-display);
+  font-size: 3rem;
+  font-weight: 800;
+  line-height: 1.1;
+  margin-bottom: 24px;
+}
+
+.auth-visual p {
+  font-size: 18px;
+  line-height: 1.6;
+  opacity: 0.8;
+}
+
+.auth-panel {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-body);
+  padding: 40px;
+}
+
+@media (max-width: 900px) {
+  .auth-split { flex-direction: column; }
+  .auth-visual { display: none; }
+  .auth-panel { padding: 20px; }
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 500px;
+  padding: 48px;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 10px 40px rgba(0,0,0,0.08); 
+  text-align: center;
+}
+
+.auth-title {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 800;
+  margin-bottom: 32px;
+  color: var(--text-primary);
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  text-align: left;
+}
+
+.form-floating {
+  position: relative;
+}
+
+.form-floating .ims-input {
+  height: 56px;
+  padding: 24px 16px 8px;
+  font-size: 15px;
+  background: var(--surface-1);
+}
+
+.form-floating .ims-input:focus {
+  background: white;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-soft);
+}
+
+.form-floating label {
+  position: absolute;
+  top: 50%;
+  left: 16px;
+  transform: translateY(-50%);
+  font-size: 15px;
+  color: var(--text-muted);
+  pointer-events: none;
+  transition: 0.2s ease all;
+}
+
+.form-floating .ims-input:focus ~ label,
+.form-floating .ims-input:not(:placeholder-shown) ~ label {
+  top: 12px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--primary);
+  text-transform: uppercase;
+}
+
+/* For the select, we don't float the label exactly the same, we'll just style it nice */
+.role-select-wrap {
+  text-align: left;
+}
+.role-select-wrap .ims-select {
+  height: 56px;
+  font-size: 15px;
+}
+
+.auth-submit {
+  height: 52px;
+  font-size: 16px;
+  margin-top: 16px;
+}
+
+.auth-footer {
+  margin-top: 24px;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+.auth-footer a {
+  color: var(--primary);
+  font-weight: 600;
+  text-decoration: none;
+}
+.auth-footer a:hover {
+  text-decoration: underline;
+}

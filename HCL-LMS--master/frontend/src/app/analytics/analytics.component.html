@@ -7,41 +7,44 @@
       <p class="ims-page-sub">Revenue trends · Turnover · Category & supplier analytics</p>
     </div>
     <div class="an-actions">
-      <select class="ims-select an-range" [(ngModel)]="range" (change)="loadAll()">
+      <select class="ims-select an-range" [(ngModel)]="range" (change)="loadAll()" style="max-width: 160px; min-height: 40px;">
         <option value="THIS_MONTH">This Month</option>
         <option value="LAST_MONTH">Last Month</option>
         <option value="THIS_QUARTER">This Quarter</option>
         <option value="THIS_YEAR">This Year</option>
       </select>
-      <button type="button" class="ims-btn ims-btn-ghost" (click)="exportPdf()">
-        Export PDF
-      </button>
-      <button type="button" class="ims-btn ims-btn-primary" (click)="exportCsv()">
-        Export CSV
-      </button>
+      <button type="button" class="ims-btn ims-btn-ghost" (click)="exportPdf()">Export PDF</button>
+      <button type="button" class="ims-btn ims-btn-ghost" (click)="exportCsv()">Export CSV</button>
     </div>
   </header>
+
+  <div class="an-tabs">
+    <button class="an-tab active">Overview</button>
+    <button class="an-tab">Revenue</button>
+    <button class="an-tab">Inventory</button>
+    <button class="an-tab">Suppliers</button>
+  </div>
 
   <div class="ims-loading-overlay" *ngIf="loading">
     <div class="ims-loader"></div>
   </div>
 
   <section class="an-kpis" *ngIf="summary && !loading">
-    <article class="kpi-mini ims-card pastel-sky">
+    <article class="kpi-mini" style="border-top: 4px solid var(--primary-soft)">
       <span class="kpi-mini-label">Revenue</span>
       <strong>{{ summary.revenue | currency : 'INR' : 'symbol' : '1.0-0' }}</strong>
     </article>
-    <article class="kpi-mini ims-card pastel-lemon">
+    <article class="kpi-mini" style="border-top: 4px solid var(--info)">
       <span class="kpi-mini-label">Inventory Turnover Rate</span>
       <strong>{{ summary.turnoverRate }}x</strong>
       <div class="kpi-sub">Industry avg: {{ summary.industryAvg }}x</div>
     </article>
-    <article class="kpi-mini ims-card pastel-mint">
+    <article class="kpi-mini" style="border-top: 4px solid var(--success)">
       <span class="kpi-mini-label">Gross Profit</span>
       <strong>{{ summary.grossProfit | currency : 'INR' : 'symbol' : '1.0-0' }}</strong>
       <div class="kpi-sub">Margin: {{ summary.grossMargin }}%</div>
     </article>
-    <article class="kpi-mini ims-card pastel-lilac">
+    <article class="kpi-mini" style="border-top: 4px solid var(--warning)">
       <span class="kpi-mini-label">Total Inventory Value</span>
       <strong>{{ summary.inventoryValue | currency : 'INR' : 'symbol' : '1.0-0' }}</strong>
     </article>
@@ -50,22 +53,25 @@
   <section class="ims-card an-chart">
     <div class="an-chart-head">
       <h2 class="an-h2">Revenue Trend (6 months)</h2>
-      <span class="muted">Sales vs Purchases</span>
+      <span class="ims-page-sub">Sales vs Purchases</span>
     </div>
-    <ngx-charts-bar-vertical-2d
-      *ngIf="summary?.trend?.length && groupedTrend().length"
-      [view]="barView"
-      [scheme]="chartScheme"
-      [schemeType]="schemeType"
-      [results]="groupedTrend()"
-      [gradient]="true"
-      [xAxis]="true"
-      [yAxis]="true"
-      [legend]="true"
-      [legendPosition]="legendPosition"
-      [roundEdges]="true"
-    ></ngx-charts-bar-vertical-2d>
-    <p *ngIf="!groupedTrend().length" class="empty-hint">No trend data yet.</p>
+    <div style="height: 340px; display: flex; justify-content: center; align-items: center;">
+      <ngx-charts-bar-vertical-2d
+        *ngIf="summary?.trend?.length && groupedTrend().length"
+        [view]="barView"
+        [scheme]="chartScheme"
+        [schemeType]="schemeType"
+        [results]="groupedTrend()"
+        [gradient]="true"
+        [xAxis]="true"
+        [yAxis]="true"
+        [legend]="true"
+        [legendPosition]="legendPosition"
+        [roundEdges]="true"
+        [showGridLines]="true"
+      ></ngx-charts-bar-vertical-2d>
+      <p *ngIf="!groupedTrend().length" class="empty-hint">No trend data yet.</p>
+    </div>
   </section>
 
   <section class="an-split">
@@ -85,35 +91,35 @@
 
     <div class="ims-card an-insight" *ngIf="summary?.insight">
       <h2 class="an-h2">Analytics Insight</h2>
-      <p>{{ summary.insight }}</p>
+      <p style="font-size: 14px; color: var(--text-secondary); line-height: 1.6;">{{ summary.insight }}</p>
     </div>
   </section>
 
   <section class="ims-card an-table">
     <h2 class="an-h2">Inventory Turnover Report</h2>
     <div class="table-scroll">
-      <table class="ref-table">
+      <table class="data-table">
         <thead>
           <tr>
             <th>Product</th>
-            <th>Units Sold</th>
-            <th>Units Purchased</th>
-            <th>Closing Stock</th>
-            <th>Turnover Rate</th>
+            <th style="text-align: right">Units Sold</th>
+            <th style="text-align: right">Units Purchased</th>
+            <th style="text-align: right">Closing Stock</th>
+            <th style="text-align: right">Turnover Rate</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let r of summary?.rows">
-            <td>{{ r.product }}</td>
-            <td>{{ r.unitsSold }}</td>
-            <td>{{ r.unitsPurchased }}</td>
-            <td>{{ r.closingStock }}</td>
-            <td>{{ r.turnoverRate }}</td>
+            <td style="font-weight: 500">{{ r.product }}</td>
+            <td style="text-align: right">{{ r.unitsSold }}</td>
+            <td style="text-align: right">{{ r.unitsPurchased }}</td>
+            <td style="text-align: right">{{ r.closingStock }}</td>
+            <td style="text-align: right; color: var(--info); font-weight: 600">{{ r.turnoverRate }}x</td>
           </tr>
         </tbody>
       </table>
     </div>
-    <p *ngIf="!summary?.rows?.length" class="empty-hint">No turnover data yet.</p>
+    <p *ngIf="!summary?.rows?.length" class="empty-hint" style="padding: 24px;">No turnover data yet.</p>
   </section>
 
   <section class="ims-card an-sup">
@@ -130,4 +136,3 @@
     <p *ngIf="!summary?.analyticsSuppliers?.length" class="empty-hint">No supplier rating data.</p>
   </section>
 </div>
-

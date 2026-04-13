@@ -1,77 +1,50 @@
 <div class="ims-page profile-page" *ngIf="user">
-  <p *ngIf="message" class="message">{{ message }}</p>
+  <p *ngIf="message" class="ims-toast" [ngClass]="message.includes('success') ? '' : 'ims-error'">{{ message }}</p>
 
   <header class="ims-page-head">
     <div>
-      <h1 class="ims-page-title">Profile</h1>
-      <p class="ims-page-sub">Account details synced with the server</p>
+      <h1 class="ims-page-title">Profile Settings</h1>
+      <p class="ims-page-sub">Manage your account information and preferences</p>
     </div>
   </header>
 
-  <div class="profile-layout">
-    <section class="hero ims-card">
-      <div class="hero-inner">
-        <div class="avatar">{{ user.name?.charAt(0) || '?' }}</div>
-        <div>
-          <h2 class="hero-name">{{ user.name }}</h2>
-          <p class="hero-email">{{ user.email }}</p>
-          <span class="ims-pill ims-pill-ok role-pill">{{ user.role }}</span>
-        </div>
-      </div>
-    </section>
+  <div class="profile-grid">
+    <!-- Left Column: User Info -->
+    <div class="ims-card profile-info">
+      <div class="avatar">{{ user.name?.charAt(0) || '?' }}</div>
+      <h2 class="hero-name">{{ user.name }}</h2>
+      <p class="hero-email">{{ user.email }}</p>
+      <div class="role-pill">{{ user.role }}</div>
+    </div>
 
-    <section class="edit-panel ims-card">
-      <h3 class="panel-title">Edit details</h3>
-      <form (ngSubmit)="saveProfile()" class="stack-form">
-        <div>
-          <label class="ims-label">Name</label>
-          <input
-            class="ims-input"
-            type="text"
-            name="name"
-            [(ngModel)]="editForm.name"
-            required
-          />
+    <!-- Right Column: Edit Form -->
+    <div class="ims-card profile-form-card">
+      <h2 class="ims-page-title" style="font-size: 18px; margin-bottom: 24px;">Edit Details</h2>
+      <form (ngSubmit)="saveProfile()">
+        <div class="form-grid">
+          <div>
+            <label class="ims-label">Full Name</label>
+            <input class="ims-input" type="text" name="name" [(ngModel)]="editForm.name" required />
+          </div>
+          <div>
+            <label class="ims-label">Email Address</label>
+            <input class="ims-input" type="email" name="email" [(ngModel)]="editForm.email" required />
+          </div>
+          <div>
+            <label class="ims-label">Phone Number</label>
+            <input class="ims-input" type="text" name="phone" [(ngModel)]="editForm.phoneNumber" required />
+          </div>
+          <div>
+            <label class="ims-label">New Password</label>
+            <input class="ims-input" type="password" name="pw" [(ngModel)]="editForm.password" placeholder="Leave blank to keep current" autocomplete="new-password" />
+          </div>
         </div>
-        <div>
-          <label class="ims-label">Email</label>
-          <input
-            class="ims-input"
-            type="email"
-            name="email"
-            [(ngModel)]="editForm.email"
-            required
-          />
+        <div class="form-actions">
+          <button type="submit" class="ims-btn ims-btn-primary" [disabled]="saving">
+            {{ saving ? 'Saving Changes...' : 'Save Changes' }}
+          </button>
         </div>
-        <div>
-          <label class="ims-label">Phone</label>
-          <input
-            class="ims-input"
-            type="text"
-            name="phone"
-            [(ngModel)]="editForm.phoneNumber"
-            required
-          />
-        </div>
-        <div>
-          <label class="ims-label">New password</label>
-          <input
-            class="ims-input"
-            type="password"
-            name="pw"
-            [(ngModel)]="editForm.password"
-            placeholder="Leave blank to keep current"
-            autocomplete="new-password"
-          />
-        </div>
-        <button
-          type="submit"
-          class="ims-btn ims-btn-primary wide"
-          [disabled]="saving"
-        >
-          {{ saving ? 'Saving…' : 'Save changes' }}
-        </button>
       </form>
-    </section>
+    </div>
   </div>
 </div>

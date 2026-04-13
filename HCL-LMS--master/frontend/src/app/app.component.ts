@@ -4,6 +4,7 @@ import {
   Component,
   OnDestroy,
   OnInit,
+  HostListener,
 } from '@angular/core';
 import {
   NavigationEnd,
@@ -30,6 +31,21 @@ export class AppComponent implements OnInit, OnDestroy {
   lowStockCount: number = 0;
   activeAlertCount: number = 0;
   poPendingCount: number = 0;
+  mobileMenuOpen = false;
+  userMenuOpen = false;
+  userName = 'User';
+
+  get userInitial(): string {
+    return this.userName ? this.userName.charAt(0).toUpperCase() : 'U';
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    const target = event.target as HTMLElement;
+    if (!target.closest('.ims-user-menu') && !target.closest('.ims-avatar-btn') && this.userMenuOpen) {
+      this.userMenuOpen = false;
+    }
+  }
   private sub?: Subscription;
   private alertPollHandle?: ReturnType<typeof setInterval>;
 
@@ -85,6 +101,14 @@ export class AppComponent implements OnInit, OnDestroy {
     );
 
     if (this.shellVisible) {
+      this.apiService.getLoggedInUserInfo().subscribe({
+        next: (res) => {
+          this.userName = res?.user?.name || res?.name || 'User';
+          this.cdr.detectChanges();
+        },
+        error: () => {}
+      });
+
       this.apiService.getDashboardSummary().subscribe({
         next: (res) => {
           this.lowStockCount = res.dashboardSummary?.lowStockProductCount || 0;

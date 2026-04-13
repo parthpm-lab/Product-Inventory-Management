@@ -1,91 +1,51 @@
 <div class="ims-page cat-page">
-  <p *ngIf="message" class="message">{{ message }}</p>
+  <p *ngIf="message" class="ims-toast" [ngClass]="message.includes('success') ? '' : 'ims-error'">{{ message }}</p>
 
   <header class="ims-page-head">
     <div>
       <h1 class="ims-page-title">Categories</h1>
-      <p class="ims-page-sub">
-        Product mix per category — counts come from your inventory
-      </p>
+      <p class="ims-page-sub">Organize your inventory taxonomy into discrete groups</p>
     </div>
   </header>
 
-  <div class="cat-add ims-card">
-    <h2 class="cat-section-title">
-      {{ isEditing ? 'Edit category' : 'New category' }}
-    </h2>
-    <div class="cat-add-row">
-      <input
-        class="ims-input"
-        type="text"
-        [(ngModel)]="categoryName"
-        placeholder="Category name"
-        (keyup.enter)="isEditing ? editCategory() : addCategory()"
-      />
-      <button
-        type="button"
-        class="ims-btn ims-btn-primary"
-        *ngIf="!isEditing"
-        (click)="addCategory()"
-      >
-        Add
-      </button>
-      <button
-        type="button"
-        class="ims-btn ims-btn-primary"
-        *ngIf="isEditing"
-        (click)="editCategory()"
-      >
-        Save
-      </button>
-      <button
-        type="button"
-        class="ims-btn ims-btn-ghost"
-        *ngIf="isEditing"
-        (click)="cancelEdit()"
-      >
-        Cancel
-      </button>
+  <div class="category-grid">
+    <!-- Form Side -->
+    <div class="ims-card cat-form-card">
+      <h2 class="cat-h2">{{ isEditing ? 'Edit Category' : 'Create New Category' }}</h2>
+      <div class="cat-form">
+        <input class="ims-input" type="text" [(ngModel)]="categoryName" placeholder="e.g. Electronics, Furniture..." (keyup.enter)="isEditing ? editCategory() : addCategory()">
+        
+        <div class="cat-form-actions">
+          <button type="button" class="ims-btn ims-btn-primary" style="flex: 1;" *ngIf="!isEditing" (click)="addCategory()">Add Category</button>
+          
+          <button type="button" class="ims-btn ims-btn-primary" style="flex: 1;" *ngIf="isEditing" (click)="editCategory()">Save Details</button>
+          <button type="button" class="ims-btn ims-btn-ghost" style="flex: 1;" *ngIf="isEditing" (click)="cancelEdit()">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- List Side -->
+    <div class="cat-list" *ngIf="categories.length">
+      <div class="ims-card cat-card" *ngFor="let category of categories">
+        <div class="cat-icon">{{ category.name.charAt(0) }}</div>
+        <h3>{{ category.name }}</h3>
+        <p class="cat-count">{{ category.productCount || 0 }} products</p>
+        
+        <div class="cat-progress">
+          <div class="cat-progress-fill" [style.width.%]="barPercent(category)"></div>
+        </div>
+
+        <div class="cat-actions">
+          <button type="button" class="ims-btn ims-btn-ghost" style="flex: 1" (click)="handleEditCategory(category)">Edit</button>
+          <button type="button" class="ims-btn ims-btn-danger" style="flex: 1" (click)="handleDeleteCategory(category.id)">Delete</button>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="!categories.length && !message" class="ims-empty-state ims-card" style="grid-column: 2;">
+      <div class="empty-icon">📁</div>
+      <h3 class="empty-title">No categories yet</h3>
+      <p class="empty-desc">Create your first category to start organizing your products.</p>
     </div>
   </div>
-
-  <div class="cat-grid">
-    <article
-      class="cat-card ims-card"
-      *ngFor="let category of categories; let i = index"
-      [style.--delay.ms]="i * 40"
-    >
-      <div class="cat-icon" [attr.data-initial]="category.name.charAt(0)">
-        {{ category.name.charAt(0) }}
-      </div>
-      <h3>{{ category.name }}</h3>
-      <p class="cat-count">{{ category.productCount || 0 }} products</p>
-      <div class="cat-progress">
-        <div
-          class="cat-progress-fill"
-          [style.width.%]="barPercent(category)"
-        ></div>
-      </div>
-      <div class="cat-actions">
-        <button
-          type="button"
-          class="ims-btn ims-btn-ghost"
-          (click)="handleEditCategory(category)"
-        >
-          Edit
-        </button>
-        <button
-          type="button"
-          class="ims-btn ims-btn-danger"
-          (click)="handleDeleteCategory(category.id)"
-        >
-          Delete
-        </button>
-      </div>
-    </article>
-  </div>
-
-  <p *ngIf="!categories.length && !message" class="empty-state ims-card">
-    No categories yet. Create one to organize products.
-  </p>
 </div>

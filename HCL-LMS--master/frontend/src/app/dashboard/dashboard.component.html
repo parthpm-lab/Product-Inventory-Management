@@ -1,39 +1,28 @@
-<div class="ims-page ref-dash">
+<div class="ims-page">
   <p *ngIf="message" class="ims-toast ims-error">{{ message }}</p>
 
-  <header class="ref-hero">
-    <div>
-      <h1 class="ims-page-title">Your analytics</h1>
-      <p class="ref-greet" *ngIf="user">
-        Hello {{ user.name }}
-        <span class="ref-greet-sub" *ngIf="summary">
-          · Inventory {{ formatMoney(summary.inventoryValue) }}
-          <span class="dot">·</span>
-          {{ summary.saleTransactionsThisMonth }} sales this month
-        </span>
-      </p>
-    </div>
-    <div class="ref-hero-actions">
-      <!-- Search functionality removed -->
-    </div>
-  </header>
+  <div class="dash-welcome" *ngIf="user">
+    <h1 class="ims-page-title">Welcome back, {{ user.name }}</h1>
+    <p style="opacity: 0.9; margin-top: 4px; font-weight: 500;" *ngIf="summary">
+      Inventory {{ formatMoney(summary.inventoryValue) }} · {{ summary.saleTransactionsThisMonth }} sales this month
+    </p>
+  </div>
 
-  <!-- Role-based KPI Cards for STAFF -->
-  <div class="ref-kpi-grid" *appHasRole="'STAFF'">
-    <div class="ims-card ref-kpi-card">
+  <div class="grid-2" *appHasRole="'STAFF'" style="margin-bottom: 24px;">
+    <div class="ims-card kpi-card">
       <div class="kpi-label">My Sales Today</div>
-      <div class="kpi-value">{{ formatMoney(summary?.mySalesToday) }}</div>
+      <div class="kpi-value kpi-value">{{ formatMoney(summary?.mySalesToday) }}</div>
       <div class="kpi-sub">Total revenue from your sales</div>
     </div>
-    <div class="ims-card ref-kpi-card">
+    <div class="ims-card kpi-card">
       <div class="kpi-label">My Transactions Count</div>
-      <div class="kpi-value">{{ summary?.myTransactionsCount }}</div>
+      <div class="kpi-value kpi-value">{{ summary?.myTransactionsCount }}</div>
       <div class="kpi-sub">Total orders processed by you</div>
     </div>
   </div>
-  <!-- Staff Personalized Graphs -->
-  <div class="ref-staff-charts" *appHasRole="'STAFF'">
-    <section class="ims-card staff-chart-panel">
+
+  <div class="grid-2" *appHasRole="'STAFF'" style="margin-bottom: 24px;">
+    <section class="ims-card chart-panel staff-chart-panel">
       <div class="panel-head">
         <h2 class="panel-h2">Monthly Sales Performance</h2>
         <p class="panel-sub">Your sales revenue over the last 12 months</p>
@@ -58,7 +47,7 @@
       </div>
     </section>
 
-    <section class="ims-card staff-chart-panel">
+    <section class="ims-card chart-panel staff-chart-panel">
       <div class="panel-head">
         <h2 class="panel-h2">Daily Sales Pulse</h2>
         <p class="panel-sub">Your daily sales activity for the last 30 days</p>
@@ -88,98 +77,110 @@
   <app-insight-card-row *appHasRole="['ADMIN', 'WAREHOUSE_MANAGER', 'PROCUREMENT_OFFICER']"
     [cards]="summary?.insightCards"></app-insight-card-row>
 
-  <div class="ref-main-split" *ngIf="summary">
-    <section class="ref-chart-panel ims-card" *appHasRole="['ADMIN', 'WAREHOUSE_MANAGER', 'PROCUREMENT_OFFICER']">
-      <div class="ref-panel-head">
+  <div class="dashboard-split" *ngIf="summary">
+    <section class="chart-panel ims-card" *appHasRole="['ADMIN', 'WAREHOUSE_MANAGER', 'PROCUREMENT_OFFICER']">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
         <div>
-          <h2 class="panel-h2">Inventory process</h2>
+          <h2 class="panel-h2">Revenue Overview</h2>
           <p class="panel-sub">7-day volume from your ledger</p>
         </div>
-        <!-- ... tabs and charts ... -->
+        <div class="ref-tabs">
+          <button [class.active]="mainTab === 'bar'" (click)="mainTab = 'bar'">Bar</button>
+          <button [class.active]="mainTab === 'line'" (click)="mainTab = 'line'">Line</button>
+        </div>
       </div>
-      <!-- ... rest of chart logic ... -->
-      <ngx-charts-bar-vertical *ngIf="mainTab === 'bar' && points(summary.sevenDayVolumeBars).length"
-        [view]="mainChartView" [scheme]="chartScheme" [schemeType]="schemeType"
-        [results]="points(summary.sevenDayVolumeBars)" [gradient]="true" [xAxis]="true" [yAxis]="true"
-        [legend]="showLegend" [showXAxisLabel]="true" [showYAxisLabel]="true" xAxisLabel="Day" yAxisLabel="Amount"
-        [animations]="animations" [roundEdges]="true">
-      </ngx-charts-bar-vertical>
-      <ngx-charts-line-chart *ngIf="mainTab === 'line' && lineChartResults(summary.sevenDayVolumeLine).length"
-        [view]="mainChartView" [scheme]="chartScheme" [schemeType]="schemeType"
-        [results]="lineChartResults(summary.sevenDayVolumeLine)" [gradient]="true" [xAxis]="true" [yAxis]="true"
-        [legend]="showLegend" [showXAxisLabel]="true" [showYAxisLabel]="true" xAxisLabel="Day" yAxisLabel="Amount"
-        [animations]="animations" [autoScale]="true">
-      </ngx-charts-line-chart>
-      <p *ngIf="!points(summary.sevenDayVolumeBars).length" class="panel-empty">
-        No 7-day activity yet.
-      </p>
+      
+      <div style="height: 340px; display: flex; justify-content: center; align-items: center;">
+        <ngx-charts-bar-vertical *ngIf="mainTab === 'bar' && points(summary.sevenDayVolumeBars).length"
+          [view]="mainChartView" [scheme]="chartScheme" [schemeType]="schemeType"
+          [results]="points(summary.sevenDayVolumeBars)" [gradient]="true" [xAxis]="true" [yAxis]="true"
+          [legend]="showLegend" [showXAxisLabel]="true" [showYAxisLabel]="true" xAxisLabel="Day" yAxisLabel="Amount"
+          [animations]="animations" [roundEdges]="true">
+        </ngx-charts-bar-vertical>
+        <ngx-charts-line-chart *ngIf="mainTab === 'line' && lineChartResults(summary.sevenDayVolumeLine).length"
+          [view]="mainChartView" [scheme]="chartScheme" [schemeType]="schemeType"
+          [results]="lineChartResults(summary.sevenDayVolumeLine)" [gradient]="true" [xAxis]="true" [yAxis]="true"
+          [legend]="showLegend" [showXAxisLabel]="true" [showYAxisLabel]="true" xAxisLabel="Day" yAxisLabel="Amount"
+          [animations]="animations" [autoScale]="true">
+        </ngx-charts-line-chart>
+        <p *ngIf="!points(summary.sevenDayVolumeBars).length" class="panel-empty">
+          No 7-day activity yet.
+        </p>
+      </div>
     </section>
 
-    <aside class="ref-dark-stack" *appHasRole="['ADMIN']">
-      <div class="ref-dark-card">
-        <h3 class="dark-title">Category share</h3>
-        <p class="dark-sub">By inventory valuation</p>
+    <!-- Right Column Quick Stats -->
+    <div style="display: flex; flex-direction: column; gap: 20px;" *appHasRole="['ADMIN']">
+      <div class="ims-card chart-panel">
+        <h2 class="panel-h2">Category share</h2>
+        <p class="panel-sub">By inventory valuation</p>
         <div class="hmetric" *ngFor="let row of summary.categoryInventoryShare; let i = index">
           <div class="hmetric-label">
             <span>{{ row.label }}</span>
-            <span class="hmetric-pct">{{ row.percent }}%</span>
+            <span style="font-weight: 600;">{{ row.percent }}%</span>
           </div>
           <div class="hmetric-track">
-            <div class="hmetric-fill" [ngClass]="hbarClass(row.colorIndex ?? i)" [style.width.%]="row.percent"></div>
+            <div class="hmetric-fill" [style.width.%]="row.percent" [style.background-color]="chartScheme.domain[i % chartScheme.domain.length]"></div>
           </div>
         </div>
-        <p *ngIf="!summary.categoryInventoryShare?.length" class="dark-empty">
+        <p *ngIf="!summary.categoryInventoryShare?.length" class="panel-empty" style="padding: 20px;">
           Add categorized products to see splits.
         </p>
       </div>
 
-      <div class="ref-dark-card donut-card">
-        <h3 class="dark-title">Activity mix</h3>
-        <p class="dark-sub">Last 30 days · transaction types</p>
-        <ngx-charts-pie-chart *ngIf="points(summary.activityDonutLast30Days).length" [view]="donutView"
-          [scheme]="chartScheme" [schemeType]="schemeType" [results]="points(summary.activityDonutLast30Days)"
-          [legend]="true" legendTitle="Transaction types" [legendPosition]="donutLegendPosition" [labels]="showLabels"
-          [doughnut]="true" [arcWidth]="0.35" [gradient]="true" [animations]="animations">
-        </ngx-charts-pie-chart>
-        <p *ngIf="!points(summary.activityDonutLast30Days).length" class="dark-empty">
-          No transactions in the last 30 days.
-        </p>
+      <div class="ims-card chart-panel">
+        <h2 class="panel-h2">Activity mix</h2>
+        <p class="panel-sub">Last 30 days · transaction types</p>
+        <div style="height: 240px; display: flex; justify-content: center; align-items: center;">
+          <ngx-charts-pie-chart *ngIf="points(summary.activityDonutLast30Days).length"
+            [view]="[300, 240]" [scheme]="chartScheme" [schemeType]="schemeType"
+            [results]="points(summary.activityDonutLast30Days)" [legend]="false"
+            [labels]="showLabels" [doughnut]="true" [arcWidth]="0.35" [gradient]="false" [animations]="animations">
+          </ngx-charts-pie-chart>
+          <p *ngIf="!points(summary.activityDonutLast30Days).length" class="panel-empty" style="padding: 20px;">
+            No transactions in the last 30 days.
+          </p>
+        </div>
       </div>
-    </aside>
+    </div>
   </div>
 
-  <section class="ref-recent ims-card" *ngIf="summary">
+  <section class="ims-card ref-recent" *ngIf="summary">
     <div class="ref-recent-head">
-      <h2 class="panel-h2">Recent activities</h2>
-      <span class="ref-badge" *ngIf="summary.recentTransactions?.length">
+      <h2 class="panel-h2" style="margin-bottom: 0;">Recent activities</h2>
+      <span class="ims-badge badge-neutral" *ngIf="summary.recentTransactions?.length">
         {{ summary.recentTransactions.length }} latest
       </span>
     </div>
-    <div class="ref-table-wrap" *ngIf="summary.recentTransactions?.length">
-      <table class="ref-table">
+    <div *ngIf="summary.recentTransactions?.length" style="overflow-x: auto;">
+      <table class="data-table">
         <thead>
           <tr>
             <th>Type</th>
             <th>Product</th>
-            <th>Amount</th>
-            <th></th>
+            <th style="text-align: right;">Amount</th>
+            <th>Date</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let t of summary.recentTransactions">
             <td>
-              <span class="type-pill">{{ t.transactionType }}</span>
+              <span class="ims-badge" [ngClass]="t.transactionType === 'SALE' ? 'badge-success' : 'badge-info'">
+                {{ t.transactionType }}
+              </span>
             </td>
-            <td>{{ t.product?.name || '—' }}</td>
-            <td class="amt">{{ formatMoney(t.totalPrice) }}</td>
-            <td class="muted">
+            <td style="font-weight: 500;">{{ t.product?.name || '—' }}</td>
+            <td style="text-align: right; font-weight: 600; font-variant-numeric: tabular-nums;">
+              {{ formatMoney(t.totalPrice) }}
+            </td>
+            <td style="color: var(--text-muted); font-size: 13px;">
               {{ t.createdAt | date : 'MMM d · h:mm a' }}
             </td>
           </tr>
         </tbody>
       </table>
     </div>
-    <p *ngIf="!summary.recentTransactions?.length" class="dark-empty">
+    <p *ngIf="!summary.recentTransactions?.length" class="panel-empty">
       No recent transactions.
     </p>
   </section>

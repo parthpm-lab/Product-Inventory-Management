@@ -4,17 +4,17 @@ import { Color, ScaleType } from '@swimlane/ngx-charts';
  * IMS v2 · PDF-aligned pastel analytics palette (fintech / soft donut + bar + line)
  */
 export const IMS_CHART_SCHEME: Color = {
-  name: 'imsPastel',
+  name: 'imsModern',
   selectable: true,
   group: ScaleType.Ordinal,
   domain: [
-    '#8eb8d6',
-    '#b8a9d4',
-    '#e8a8b8',
-    '#9ccbb0',
-    '#e8c97a',
-    '#a8c0e6',
-    '#c4d4e8',
-    '#d4b8c6',
+    '#6366F1',  // Indigo - primary
+    '#10B981',  // Emerald - success
+    '#F59E0B',  // Amber - warning
+    '#EF4444',  // Red - danger
+    '#8B5CF6',  // Purple
+    '#06B6D4',  // Cyan
+    '#F97316',  // Orange
+    '#84CC16',  // Lime
   ],
 };

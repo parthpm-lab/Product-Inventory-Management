@@ -1,83 +1,77 @@
 <div class="ims-page prod-page">
-  <p *ngIf="message" class="message">{{ message }}</p>
+  <p *ngIf="message" class="ims-toast" [ngClass]="message.includes('success') ? '' : 'ims-error'">{{ message }}</p>
 
-  <header class="ims-page-head">
+  <header class="ims-page-head" style="margin-bottom: 24px;">
     <div>
       <h1 class="ims-page-title">Products</h1>
       <p class="ims-page-sub">Grid view with live stock levels from your catalog</p>
     </div>
-    <button
-      type="button"
-      class="ims-btn ims-btn-primary"
-      (click)="navigateToAddProductPage()"
-      *appHasRole="['ADMIN']"
-    >
-      Add product
-    </button>
   </header>
 
+  <!-- Filter Bar -->
+  <div class="prod-filter-bar">
+    <div class="filter-inputs">
+      <input type="text" class="ims-input" placeholder="Search products...">
+      <select class="ims-select">
+        <option value="">All Categories</option>
+      </select>
+      <select class="ims-select">
+        <option value="">All Stock Levels</option>
+      </select>
+    </div>
+    <button type="button" class="ims-btn ims-btn-primary" (click)="navigateToAddProductPage()" *appHasRole="['ADMIN']">
+      Add product
+    </button>
+  </div>
+
   <div class="prod-grid" *ngIf="products.length > 0">
-    <article class="prod-card ims-card" *ngFor="let product of products">
+    <article class="prod-card" *ngFor="let product of products">
       <div class="prod-thumb">
-        <img
-          *ngIf="product.imageUrl"
-          [src]="product.imageUrl"
-          [alt]="product.name"
-        />
+        <span class="ims-badge badge-neutral cat-badge">{{ product.category?.name || 'Uncategorized' }}</span>
+        <img *ngIf="product.imageUrl" [src]="product.imageUrl" [alt]="product.name" />
         <div *ngIf="!product.imageUrl" class="prod-thumb-fallback">
           {{ product.name?.charAt(0) || '?' }}
         </div>
-        <span
-          class="ims-pill stock-pill"
-          [ngClass]="stockClass(product.stockLevel)"
-          >{{ product.stockLevel || '—' }}</span
-        >
       </div>
+      
       <div class="prod-body">
         <h3>{{ product.name }}</h3>
-        <p class="prod-sku">SKU {{ product.sku }}</p>
-        <div class="prod-stats">
-          <span>{{ product.price | currency : 'INR' : 'symbol' : '1.2-2' }}</span>
-          <span class="prod-stock">{{ product.stockQuantity }} in stock</span>
+        <p class="prod-sku">SKU: {{ product.sku }}</p>
+        
+        <div class="prod-price">{{ product.price | currency : 'INR' : 'symbol' : '1.2-2' }}</div>
+        
+        <div class="stock-info">
+          <div style="display:flex; justify-content: space-between; font-size: 11px; font-weight: 600;">
+            <span style="color: var(--text-secondary)">Stock Level</span>
+            <span [style.color]="product.stockLevel === 'LOW' ? 'var(--danger)' : product.stockLevel === 'MEDIUM' ? 'var(--warning)' : 'var(--success)'">
+              {{ product.stockQuantity }} in stock
+            </span>
+          </div>
+          <div class="stock-bar">
+            <div class="stock-fill" 
+                 [style.width]="(product.stockQuantity * 2) > 100 ? '100%' : (product.stockQuantity * 2) + '%'"
+                 [style.background]="product.stockLevel === 'LOW' ? 'var(--danger)' : product.stockLevel === 'MEDIUM' ? 'var(--warning)' : 'var(--success)'">
+            </div>
+          </div>
         </div>
+
         <div class="prod-actions">
-          <button
-            type="button"
-            class="ims-btn ims-btn-primary"
-            (click)="navigateToSellPage(product.id)"
-            *appHasRole="['ADMIN', 'STAFF']"
-          >
-            Sell Now
-          </button>
-          <button
-            type="button"
-            class="ims-btn ims-btn-ghost"
-            (click)="navigateToEditProductPage(product.id)"
-            *appHasRole="['ADMIN', 'WAREHOUSE_MANAGER']"
-          >
-            Edit
-          </button>
-          <button
-            type="button"
-            class="ims-btn ims-btn-danger"
-            (click)="handleProductDelete(product.id)"
-            *appHasRole="['ADMIN']"
-          >
-            Delete
+          <button type="button" class="ims-btn ims-btn-ghost" (click)="navigateToEditProductPage(product.id)" *appHasRole="['ADMIN', 'WAREHOUSE_MANAGER']">Edit</button>
+          <button type="button" class="ims-btn ims-btn-secondary" (click)="navigateToSellPage(product.id)" *appHasRole="['ADMIN', 'STAFF']">Sell</button>
+          <button type="button" class="ims-btn ims-btn-danger btn-icon-only" (click)="handleProductDelete(product.id)" *appHasRole="['ADMIN']" aria-label="Delete">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
           </button>
         </div>
       </div>
     </article>
   </div>
 
-  <p *ngIf="!products.length && !message" class="empty-state ims-card">
-    No products yet. Add your first item to the catalog.
-  </p>
+  <div *ngIf="!products.length && !message" class="ims-empty-state ims-card">
+    <div class="empty-icon">📦</div>
+    <h3 class="empty-title">No products yet</h3>
+    <p class="empty-desc">Add your first product to start tracking inventory</p>
+    <button class="ims-btn ims-btn-primary" (click)="navigateToAddProductPage()" *appHasRole="['ADMIN']">Add Product</button>
+  </div>
 
-  <app-pagination
-    [currentPage]="currentPage"
-    [totalPages]="totalPages"
-    (pageChange)="onPageChange($event)"
-  >
-  </app-pagination>
+  <app-pagination [currentPage]="currentPage" [totalPages]="totalPages" (pageChange)="onPageChange($event)"></app-pagination>
 </div>
