@@ -1,0 +1,102 @@
+<div class="ims-page form-page sell-page">
+  <p *ngIf="message" class="message">{{ message }}</p>
+
+  <header class="ims-page-head">
+    <div>
+      <h1 class="ims-page-title">Sell</h1>
+      <p class="ims-page-sub">Live line total and sales history from your ledger</p>
+    </div>
+  </header>
+
+  <div class="sell-layout">
+    <section class="form-shell ims-card">
+      <div class="form-head">
+        <h2>New sale</h2>
+        <p>Pricing and stock come from the selected SKU</p>
+      </div>
+
+      <!-- NEW: Stock Insufficient Alert -->
+      <div class="ims-alert ims-alert-danger shake" *ngIf="isOutOfStock">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <span>⚠️ OUT OF STOCK: This item cannot be sold until restocked.</span>
+      </div>
+
+      <div class="ims-alert ims-alert-danger" *ngIf="isStockInsufficient && !isOutOfStock">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <span>Insufficient Stock. Only <strong>{{ availableStock }}</strong> units available.</span>
+      </div>
+
+      <div class="ims-alert ims-alert-warning" *ngIf="isLowStock && !isStockInsufficient">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <span>Low Stock: Only <strong>{{ availableStock }}</strong> units remaining.</span>
+      </div>
+
+      <form (ngSubmit)="handleSubmit()" class="stack-form">
+        <div [class.out-of-stock-border]="isOutOfStock">
+          <label class="ims-label">Product</label>
+          <select
+            class="ims-select"
+            name="productId"
+            [(ngModel)]="productId"
+            (ngModelChange)="onProductChange()"
+            required
+          >
+            <option value="">Select product</option>
+            <option *ngFor="let product of products" [value]="product.id">
+              {{ product.name }} · {{ product.price | currency : 'INR' : 'symbol' : '1.2-2' }} ·
+              {{ product.stockQuantity }} available
+            </option>
+          </select>
+        </div>
+        <div>
+          <label class="ims-label">Quantity</label>
+          <input
+            class="ims-input"
+            type="number"
+            min="1"
+            [(ngModel)]="quantity"
+            name="quantity"
+            [disabled]="isOutOfStock"
+            required
+          />
+        </div>
+        <div class="total-tile">
+          <span class="total-label">Line total</span>
+          <strong class="total-val">{{ lineTotal | currency : 'INR' : 'symbol' : '1.2-2' }}</strong>
+        </div>
+        <div>
+          <label class="ims-label">Notes</label>
+          <input
+            class="ims-input"
+            type="text"
+            [(ngModel)]="description"
+            name="description"
+            placeholder="Optional reference"
+          />
+        </div>
+        <button type="submit" class="ims-btn ims-btn-primary wide" [disabled]="isStockInsufficient || isOutOfStock">
+          Complete sale
+        </button>
+      </form>
+    </section>
+
+    <section class="history ims-card">
+      <h2 class="hist-title">Recent sales</h2>
+      <ul class="hist-list" *ngIf="recentSales.length">
+        <li *ngFor="let t of recentSales">
+          <div>
+            <span class="hist-type">{{ t.transactionType }}</span>
+            <span class="hist-sub">{{ t.description || '—' }}</span>
+          </div>
+          <div class="hist-meta">
+            <span class="hist-amt">{{ t.totalPrice | currency : 'INR' : 'symbol' : '1.2-2' }}</span>
+            <span class="hist-date">{{
+              t.createdAt | date : 'MMM d, h:mm a'
+            }}</span>
+          </div>
+        </li>
+      </ul>
+      <p *ngIf="!recentSales.length" class="empty-hint">No sales yet.</p>
+    </section>
+  </div>
+</div>

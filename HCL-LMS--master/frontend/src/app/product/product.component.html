@@ -1,0 +1,83 @@
+<div class="ims-page prod-page">
+  <p *ngIf="message" class="message">{{ message }}</p>
+
+  <header class="ims-page-head">
+    <div>
+      <h1 class="ims-page-title">Products</h1>
+      <p class="ims-page-sub">Grid view with live stock levels from your catalog</p>
+    </div>
+    <button
+      type="button"
+      class="ims-btn ims-btn-primary"
+      (click)="navigateToAddProductPage()"
+      *appHasRole="['ADMIN']"
+    >
+      Add product
+    </button>
+  </header>
+
+  <div class="prod-grid" *ngIf="products.length > 0">
+    <article class="prod-card ims-card" *ngFor="let product of products">
+      <div class="prod-thumb">
+        <img
+          *ngIf="product.imageUrl"
+          [src]="product.imageUrl"
+          [alt]="product.name"
+        />
+        <div *ngIf="!product.imageUrl" class="prod-thumb-fallback">
+          {{ product.name?.charAt(0) || '?' }}
+        </div>
+        <span
+          class="ims-pill stock-pill"
+          [ngClass]="stockClass(product.stockLevel)"
+          >{{ product.stockLevel || '—' }}</span
+        >
+      </div>
+      <div class="prod-body">
+        <h3>{{ product.name }}</h3>
+        <p class="prod-sku">SKU {{ product.sku }}</p>
+        <div class="prod-stats">
+          <span>{{ product.price | currency : 'INR' : 'symbol' : '1.2-2' }}</span>
+          <span class="prod-stock">{{ product.stockQuantity }} in stock</span>
+        </div>
+        <div class="prod-actions">
+          <button
+            type="button"
+            class="ims-btn ims-btn-primary"
+            (click)="navigateToSellPage(product.id)"
+            *appHasRole="['ADMIN', 'STAFF']"
+          >
+            Sell Now
+          </button>
+          <button
+            type="button"
+            class="ims-btn ims-btn-ghost"
+            (click)="navigateToEditProductPage(product.id)"
+            *appHasRole="['ADMIN', 'WAREHOUSE_MANAGER']"
+          >
+            Edit
+          </button>
+          <button
+            type="button"
+            class="ims-btn ims-btn-danger"
+            (click)="handleProductDelete(product.id)"
+            *appHasRole="['ADMIN']"
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    </article>
+  </div>
+
+  <p *ngIf="!products.length && !message" class="empty-state ims-card">
+    No products yet. Add your first item to the catalog.
+  </p>
+
+  <app-pagination
+    [currentPage]="currentPage"
+    [totalPages]="totalPages"
+    (pageChange)="onPageChange($event)"
+  >
+  </app-pagination>
+</div>
