@@ -14,6 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
+// DTO for a single card in the dashboard's "sparkline" section, which shows a key metric and its trend over the past week
 public class DashboardSparklineCardDTO {
 
     private String title;

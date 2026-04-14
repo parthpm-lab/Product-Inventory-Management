@@ -14,6 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
+// DTO for the main dashboard summary, which aggregates key metrics and data points for display in various charts and cards on the dashboard
 public class DashboardSummaryDTO {
 
     //fields

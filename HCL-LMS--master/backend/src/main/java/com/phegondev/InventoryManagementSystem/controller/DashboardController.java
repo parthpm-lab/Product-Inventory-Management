@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+// Controller for handling dashboard-related API endpoints, primarily focused on providing aggregated data and summaries for the main dashboard view
 @RestController
 @RequestMapping("/api/dashboard")
 @RequiredArgsConstructor
