@@ -55,6 +55,7 @@ public class DashboardServiceImpl implements DashboardService {
 
     @Override
     @Transactional(readOnly = true)
+    //method to get summary of dashboard
     public Response getSummary() {
         LocalDate today = LocalDate.now();
         int year = today.getYear();
