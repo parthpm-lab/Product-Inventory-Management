@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/categories")
 @RequiredArgsConstructor
+// Controller for handling category-related API endpoints, including CRUD operations for product categories
 public class CategoryController {
 
     private final CategoryService categoryService;

@@ -13,7 +13,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/alerts")
-@RequiredArgsConstructor
+@RequiredArgsConstructor        
+// Controller for handling stock alert-related API endpoints, primarily focused on providing information about active stock alerts and their counts for display in the UI
 public class AlertController {
 
         private final StockAlertService stockAlertService;

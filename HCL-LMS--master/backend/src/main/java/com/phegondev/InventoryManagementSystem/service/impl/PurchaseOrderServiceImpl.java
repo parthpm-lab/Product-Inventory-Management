@@ -30,6 +30,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+// Service implementation for purchase order-related operations, including creating purchase orders, listing and retrieving purchase orders, approving and receiving purchase orders, and providing summary data for the purchase order management section of the application
 public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
     private final PurchaseOrderRepository purchaseOrderRepository;

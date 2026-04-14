@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/analytics")
 @RequiredArgsConstructor
+// Controller for handling analytics-related API endpoints, primarily focused on providing aggregated data and summaries for various analytics views in the application
 public class AnalyticsController {
 
     private final AnalyticsService analyticsService;

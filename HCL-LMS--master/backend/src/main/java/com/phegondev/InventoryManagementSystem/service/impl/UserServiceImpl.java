@@ -27,6 +27,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+// Service implementation for user-related operations, including CRUD operations for users and providing user data for the UI, such as performance metrics and purchase history
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;

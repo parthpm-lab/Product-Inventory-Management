@@ -30,6 +30,7 @@ import java.util.UUID;
 @Service
 @Slf4j
 @RequiredArgsConstructor
+// Service implementation for product-related operations, including CRUD operations for products, handling product images, and providing product data for the UI, such as stock levels and category information
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;

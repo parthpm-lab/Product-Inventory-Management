@@ -20,6 +20,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+// Service implementation for category-related operations, including CRUD operations for product categories and providing category data for the UI, such as product counts within each category
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;

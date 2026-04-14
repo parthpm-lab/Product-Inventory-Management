@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/suppliers/management")
 @RequiredArgsConstructor
+// Controller for handling supplier management-related API endpoints, including CRUD operations for suppliers and providing summary data for the supplier management section of the application
 public class SupplierManagementController {
 
     private final SupplierManagementService supplierManagementService;

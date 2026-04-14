@@ -40,6 +40,7 @@ import java.sql.Timestamp;
 
 @Service
 @RequiredArgsConstructor
+// Service implementation for dashboard-related operations, primarily focused on aggregating and summarizing data for the main dashboard view
 public class DashboardServiceImpl implements DashboardService {
 
     private final ProductRepository productRepository;

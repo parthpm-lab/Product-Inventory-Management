@@ -19,6 +19,7 @@ import java.util.*;
 
 @Service
 @RequiredArgsConstructor
+// Service implementation for analytics-related operations, primarily focused on providing aggregated data and summaries for various analytics views in the application
 public class AnalyticsServiceImpl implements AnalyticsService {
 
     private final TransactionRepository transactionRepository;

@@ -20,6 +20,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+// Service implementation for supplier management-related operations, including listing suppliers, retrieving supplier details, and creating/updating suppliers along with their performance metrics
 public class SupplierManagementServiceImpl implements SupplierManagementService {
 
     private final SupplierRepository supplierRepository;

@@ -22,6 +22,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+// Service implementation for supplier-related operations, including CRUD operations for suppliers and providing supplier data for the UI, such as performance metrics and purchase history
 public class SupplierServiceImpl implements SupplierService {
 
     private final SupplierRepository supplierRepository;

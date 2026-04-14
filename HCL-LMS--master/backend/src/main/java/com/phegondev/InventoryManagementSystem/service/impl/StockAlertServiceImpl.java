@@ -20,6 +20,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 @Service
 @RequiredArgsConstructor
+// Service implementation for stock alert-related operations, primarily focused on providing information about active stock alerts and their counts for display in the UI
 public class StockAlertServiceImpl implements StockAlertService {
 
     private final StockAlertRepository stockAlertRepository;

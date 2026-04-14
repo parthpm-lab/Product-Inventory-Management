@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
+// Controller for handling user-related API endpoints, including operations for managing users, retrieving user information, and providing user-specific data such as transaction history
 public class UserController {
 
     private final UserService userService;

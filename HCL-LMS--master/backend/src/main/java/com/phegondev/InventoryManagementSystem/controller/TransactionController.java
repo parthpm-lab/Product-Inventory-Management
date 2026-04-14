@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/transactions")
 @RequiredArgsConstructor
+// Controller for handling transaction-related API endpoints, including operations for purchasing, selling, returning inventory, and providing analytics and summaries related to transactions
 public class TransactionController {
 
     private final TransactionService transactionService;

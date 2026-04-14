@@ -48,6 +48,7 @@ import java.util.TreeMap;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+// Service implementation for transaction-related operations, including handling inventory restocking, sales, returns to suppliers, and providing transaction data and analytics for the UI
 public class TransactionServiceImpl implements TransactionService {
 
     private final TransactionRepository transactionRepository;
